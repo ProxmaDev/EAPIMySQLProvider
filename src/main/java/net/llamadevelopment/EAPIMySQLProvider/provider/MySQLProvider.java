@@ -16,9 +16,7 @@ public class MySQLProvider implements Provider {
     private String database = "economyapi";
 
     @Override
-    public void init(File file) {
-
-    }
+    public void init(File file) { }
 
     @Override
     public void open() {
@@ -40,56 +38,37 @@ public class MySQLProvider implements Provider {
                 createTable.executeUpdate(tableCreate);
             }
 
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM " + database + ".money");
-
-            while (resultSet.next()) {
-                String id = resultSet.getString("id");
-                Double money = resultSet.getDouble("money");
-                data.put(id, money);
-            }
         } catch (SQLException ex) {
             ex.printStackTrace();
             System.out.println("It was not possible to establish a connection with the database.");
-            return;
         } catch (ClassNotFoundException ex) {
             System.out.println("MySQL Driver is missing... Are you using the right .jar file?");
         }
     }
 
     @Override
-    public void save() {
+    public void save() { }
+
+    @Override
+    public void close() {
         try {
-            for (Map.Entry<String, Double> map : data.entrySet()) {
-                ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM " + database + ".money WHERE id='" + map.getKey() + "'");
-                if (resultSet.next()) {
-                    Double currMoney = resultSet.getDouble("money");
-                    if (!currMoney.equals(map.getValue())) {
-                        Statement updateStatement = connection.createStatement();
-                        updateStatement.executeUpdate("UPDATE " + database + ".money SET money=" + map.getValue() + " WHERE id='" + map.getKey() + "'");
-                    }
-                } else {
-                    PreparedStatement newUserStatement = connection.prepareStatement("INSERT INTO " + database + ".money (id, money) VALUES (?,?)");
-                    newUserStatement.setString(1, map.getKey());
-                    newUserStatement.setDouble(2, map.getValue());
-                    newUserStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
-    public void close() {
-        this.save();
-
-        data.clear();
-    }
-
-    @Override
     public boolean accountExists(String id) {
-        return data.containsKey(id);
+        try {
+            ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM " + database + ".money WHERE id='" + id + "'");
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     @Override
@@ -102,7 +81,6 @@ public class MySQLProvider implements Provider {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            data.remove(id);
             return true;
         }
         return false;
@@ -111,16 +89,25 @@ public class MySQLProvider implements Provider {
     @Override
     public boolean createAccount(String id, double defaultMoney) {
         if (!this.accountExists(id)) {
-            data.put(id, defaultMoney);
+            try {
+                PreparedStatement newUserStatement = connection.prepareStatement("INSERT INTO " + database + ".money (id, money) VALUES (?,?)");
+                newUserStatement.setString(1, id);
+                newUserStatement.setDouble(2, defaultMoney);
+                newUserStatement.executeUpdate();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
         return false;
     }
 
     @Override
     public boolean setMoney(String id, double amount) {
-        if (data.containsKey(id)) {
-            data.put(id, amount);
+        try {
+            connection.createStatement().executeUpdate("UPDATE " + database + ".money SET money = " + amount +" WHERE id='" + id + "'");
             return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return false;
     }
@@ -128,33 +115,51 @@ public class MySQLProvider implements Provider {
 
     @Override
     public boolean addMoney(String id, double amount) {
-        if (data.containsKey(id)) {
-            data.put(id, data.get(id) + amount);
+        try {
+            connection.createStatement().executeUpdate("UPDATE " + database + ".money SET money = money +" + amount +" WHERE id='" + id + "'");
             return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return false;
     }
 
     @Override
     public boolean reduceMoney(String id, double amount) {
-        if (data.containsKey(id)) {
-            data.put(id, data.get(id) - amount);
+        try {
+            connection.createStatement().executeUpdate("UPDATE " + database + ".money SET money = money -" + amount +" WHERE id='" + id + "'");
             return true;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return false;
     }
 
     @Override
     public double getMoney(String id) {
-        if (data.containsKey(id)) {
-            return data.get(id);
+        try {
+            ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM " + database + ".money WHERE id='" + id + "'");
+            if (resultSet.next()) {
+                return resultSet.getDouble("money");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return -1;
     }
 
     @Override
     public LinkedHashMap<String, Double> getAll() {
-        return data;
+        LinkedHashMap<String, Double> all = new LinkedHashMap<String, Double>();
+        try {
+            ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM " + database + ".money");
+            while (resultSet.next()) {
+                all.put(resultSet.getString("id"), resultSet.getDouble("money"));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return all;
     }
 
     @Override
