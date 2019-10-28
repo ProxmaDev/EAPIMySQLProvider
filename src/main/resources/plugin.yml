@@ -1,0 +1,8 @@
+name: EAPIMySQLProvider
+description: EconomyAPI MySQL Provider
+main: net.llamadevelopment.EAPIMySQLProvider.EAPIMySQLProvider
+version: 1.0.0
+api: 1.0.0
+author: SchdowNVIDIA
+depend:
+  - EconomyAPI

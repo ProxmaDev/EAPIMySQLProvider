@@ -1,0 +1,8 @@
+# Note: You need to create the database before setting this up.
+
+mysql:
+  ip: localhost
+  port: 3306
+  database: "economyapi"
+  username: "root"
+  password: "yourSecurePassword"
