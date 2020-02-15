@@ -6,7 +6,7 @@
 
     <groupId>net.llamadevelopment.EAPIMySQLProvider</groupId>
     <artifactId>EAPIMySQLProvider</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <repositories>
@@ -30,10 +30,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.18</version>
-            <scope>compile</scope>
+            <groupId>ru.nukkit.dblib</groupId>
+            <artifactId>DbLib</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

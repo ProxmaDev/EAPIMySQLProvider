@@ -33,7 +33,7 @@ public class MySQLProvider implements Provider {
             dbm = connection.getMetaData();
             ResultSet tables = dbm.getTables(null, null, "money", null);
             if (!tables.next()) {
-                String tableCreate = "CREATE TABLE money (id VARCHAR(255), money double null, constraint money_pk primary key(id))";
+                String tableCreate = "CREATE TABLE money (id VARCHAR(64), money double null, constraint money_pk primary key(id))";
                 Statement createTable = connection.createStatement();
                 createTable.executeUpdate(tableCreate);
             }
@@ -166,4 +166,5 @@ public class MySQLProvider implements Provider {
     public String getName() {
         return "MySQL";
     }
+
 }
