@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.llamadevelopment.EAPIMySQLProvider</groupId>
   <artifactId>EAPIMySQLProvider</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.2</version>
   <build>
     <plugins>
       <plugin>
@@ -33,6 +33,10 @@
       <id>nukkit-repo</id>
       <url>https://repo.nukkitx.com/maven-snapshots</url>
     </repository>
+    <repository>
+      <id>lldv-repo</id>
+      <url>http://system01.lldv.net:8082/artifactory/libs-snapshot</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -44,6 +48,12 @@
     <dependency>
       <groupId>cn.nukkit</groupId>
       <artifactId>nukkit</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>ru.nukkit.dblib</groupId>
+      <artifactId>DbLib</artifactId>
       <version>1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
