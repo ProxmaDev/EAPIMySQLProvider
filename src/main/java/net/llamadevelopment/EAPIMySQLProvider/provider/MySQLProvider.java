@@ -25,7 +25,7 @@ public class MySQLProvider implements Provider {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             database = c.getString("mysql.database");
-            String connectionUri = "jdbc:mysql://" + c.getString("mysql.ip") + ":" + c.getString("mysql.port") + "/" + c.getString("mysql.database");
+            String connectionUri = "jdbc:mysql://" + c.getString("mysql.ip") + ":" + c.getString("mysql.port") + "/" + c.getString("mysql.database") + "?autoReconnect=true&useGmtMillisForDatetimes=true&serverTimezone=GMT";
             connection = DriverManager.getConnection(connectionUri, c.getString("mysql.username"), c.getString("mysql.password"));
             connection.setAutoCommit(true);
 
